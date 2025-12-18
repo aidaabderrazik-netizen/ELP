@@ -22,6 +22,7 @@ var graph = map[int][]int{
 // fonction de la marche aléatoire
 
 func randomwalk(start int, pas int) []int {
+	var compteur int
 	position := start
 	hist := []int{position} // trace des positions
 
@@ -33,6 +34,7 @@ func randomwalk(start int, pas int) []int {
 		// choisir un voisin aléatoire
 		position = voisins[rand.Intn(len(voisins))]
 		hist = append(hist, position)
+		compteur++
 	}
 	return hist
 
