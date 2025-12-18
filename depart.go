@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"time"
 )
 
 var graph = map[int][]int{
@@ -20,7 +21,7 @@ var graph = map[int][]int{
 
 // fonction de la marche aléatoire
 
-func randomwalk(start int, pas int) {
+func randomwalk(start int, pas int) []int {
 	position := start
 	hist := []int{position} // trace des positions
 
@@ -37,9 +38,14 @@ func randomwalk(start int, pas int) {
 
 }
 
+// fonction main
+
 func main() {
-	// Affichage simple
-	for node, voisins := range graph {
-		fmt.Println("Noeud", node, "voisins:", voisins)
-	}
+	rand.Seed(time.Now().UnixNano()) // initialisation de l'aléatoire
+
+	start := 0
+	pas := 10
+
+	walk := randomwalk(start, pas)
+	fmt.Println("Marche aléatoire :", walk)
 }
