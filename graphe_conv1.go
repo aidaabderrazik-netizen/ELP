@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/csv"
-	"fmt"
 	"io"
 	"os"
 	"strconv"
@@ -32,29 +31,24 @@ func ChargerGraphe(nomFichier string) (map[int][]int, error) {
 			u, _ := strconv.Atoi(strings.TrimSpace(ligne[0]))
 
 			voisinsRaw := strings.Trim(ligne[1], "\"")
-			listeDesVoisins := strings.Split(voisinsRaw, ",")
+			listeVoisins := strings.Split(voisinsRaw, ",")
 
-			for _, vStr := range listeDesVoisins {
+			for _, vStr := range listeVoisins {
 				vStr = strings.TrimSpace(vStr)
 				if vStr == "" {
 					continue
 				}
-				v, errConv := strconv.Atoi(vStr)
-				if errConv == nil {
+				if v, errConv := strconv.Atoi(vStr); errConv == nil {
 					graphe[u] = append(graphe[u], v)
 				}
 			}
 		}
 	}
 
-	return graphe, nil 
+	return graphe, nil
 }
 
-func main() {
-	monGraphe, err := ChargerGraphe("data.csv")
-	if err != nil {
-		fmt.Println("Erreur lors du chargement :", err)
-		return
-	}
-	fmt.Printf("Le sommet 2 possède %d voisins.\n", len(monGraphe[2]))
+func fonc() {
+	dico, _ := ChargerGraphe("lyon_graph.csv")
+
 }
