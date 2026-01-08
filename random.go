@@ -1,0 +1,27 @@
+package main
+
+import (
+	"math/rand"
+	"time"
+)
+
+// fonction de la marche aléatoire
+
+func randomwalk(start int, temps time.Duration) []int {
+	position := start
+	hist := []int{position} // trace des positions
+
+	endTime := time.Now().Add(temps) //quand arreter
+
+	for time.Now().Before(endTime) {
+		voisins := graph[position]
+		if len(voisins) == 0 {
+			break
+		}
+		position = voisins[rand.Intn(len(voisins))]
+		hist = append(hist, position)
+
+	}
+	return hist
+
+}
