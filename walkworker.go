@@ -7,9 +7,9 @@ import (
 )
 
 func walkWorker(
-	start int,
+	start int64,
 	temps time.Duration,
-	result chan<- []int, //envoie dans le canal
+	result chan<- []int64, //envoie dans le canal
 	wg *sync.WaitGroup,
 ) {
 	defer wg.Done()

@@ -8,14 +8,14 @@ import (
 	"strings"
 )
 
-func ChargerGraphe(nomFichier string) (map[int][]int, error) {
+func ChargerGraphe(nomFichier string) (map[int64][]int64, error) {
 	file, err := os.Open(nomFichier)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	graphe := make(map[int][]int)
+	graphe := make(map[int64][]int64)
 	reader := csv.NewReader(file)
 
 	for {
@@ -27,8 +27,16 @@ func ChargerGraphe(nomFichier string) (map[int][]int, error) {
 			return nil, err
 		}
 
+		// Ignorer le header
+		if ligne[0] == "node" {
+			continue
+		}
+
 		if len(ligne) >= 2 {
-			u, _ := strconv.Atoi(strings.TrimSpace(ligne[0]))
+			u, errU := strconv.ParseInt(strings.TrimSpace(ligne[0]), 10, 64)
+			if errU != nil {
+				continue
+			}
 
 			voisinsRaw := strings.Trim(ligne[1], "\"")
 			listeVoisins := strings.Split(voisinsRaw, ",")
@@ -38,7 +46,7 @@ func ChargerGraphe(nomFichier string) (map[int][]int, error) {
 				if vStr == "" {
 					continue
 				}
-				if v, errConv := strconv.Atoi(vStr); errConv == nil {
+				if v, errConv := strconv.ParseInt(vStr, 10, 64); errConv == nil {
 					graphe[u] = append(graphe[u], v)
 				}
 			}
@@ -48,7 +56,7 @@ func ChargerGraphe(nomFichier string) (map[int][]int, error) {
 	return graphe, nil
 }
 
-func fonc() {
-	dico, _ := ChargerGraphe("lyon_graph.csv")
-
+// fonction qui retourne le graphe chargé depuis le CSV
+func fonc(nomFichier string) (map[int64][]int64, error) {
+	return ChargerGraphe(nomFichier)
 }

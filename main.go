@@ -7,36 +7,59 @@ import (
 	"time"
 )
 
-var graph = map[int][]int{
-	0: {1, 3},
-	1: {0, 2, 4},
-	2: {1, 5},
-	3: {0, 4, 6},
-	4: {1, 3, 5},
-	5: {2, 4, 8},
-	6: {3, 7},
-	7: {6, 8},
-	8: {5, 7, 9},
-	9: {8},
-}
+// var graph = map[int][]int{
+// 	0: {1, 3},
+// 	1: {0, 2, 4},
+// 	2: {1, 5},
+// 	3: {0, 4, 6},
+// 	4: {1, 3, 5},
+// 	5: {2, 4, 8},
+// 	6: {3, 7},
+// 	7: {6, 8},
+// 	8: {5, 7, 9},
+// 	9: {8},
+// }
+
+var graph map[int64][]int64
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
+	// Charger le graphe depuis le CSV
+
+	var err error
+	graph, err = fonc("lyon_graph.csv")
+	if err != nil {
+		fmt.Println("Erreur lors du chargement du graphe :", err)
+		return
+	}
+
+	// S’assurer que tous les voisins existent comme clé
+	for _, voisins := range graph {
+		for _, v := range voisins {
+			if _, ok := graph[v]; !ok {
+				graph[v] = []int64{}
+			}
+		}
+	}
+
+	// Vérification rapide
+	fmt.Println("Noeud 143403 ->", graph[143403])
+
 	//paramètre du test
 	numWalks := 10000
-	duree := 2 * time.Second // 2 minutes
-	startNode := 0
+	duree := 2 * time.Second   // 5 secondes (sinon ça prend 1000 ans)
+	startNode := int64(143403) // on prend le vrai premier noeud
 
 	fmt.Printf("=== Demo : 1 goroutine qui effectue la marche aléatoire pendant %d secondes ===\n", duree/1000000000)
 	//Création du canal pour les results
-	results1 := make(chan []int, numWalks)
+	results1 := make(chan []int64, numWalks)
 
 	//Création du canal pour savoir quand le process est fini
 	done1 := make(chan bool)
 
 	//Compteur global
-	nodeCounts1 := make(map[int]int)
+	nodeCounts1 := make(map[int64]int)
 
 	var wg1 sync.WaitGroup
 
@@ -74,13 +97,13 @@ func main() {
 
 	fmt.Printf("\n=== Demo : %d goroutines qui effectue la marche aléatoire pendant %d secondes ===\n", numWalks, duree/1000000000)
 	//Création du canal pour les results
-	results := make(chan []int, numWalks)
+	results := make(chan []int64, numWalks)
 
 	//Création du canal pour savoir quand le process est fini
 	done := make(chan bool)
 
 	//Compteur global
-	nodeCounts := make(map[int]int)
+	nodeCounts := make(map[int64]int)
 
 	var wg sync.WaitGroup
 

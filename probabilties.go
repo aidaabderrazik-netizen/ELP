@@ -1,9 +1,7 @@
 package main
 
-func ComputeProbabilities(
-	nodeCounts map[int]int,
-) map[int]float64 {
-	probs := make(map[int]float64)
+func ComputeProbabilities(nodeCounts map[int64]int) map[int64]float64 {
+	probs := make(map[int64]float64)
 
 	total := 0
 	for _, count := range nodeCounts {
