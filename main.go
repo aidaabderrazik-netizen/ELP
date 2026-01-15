@@ -34,7 +34,10 @@ func main() {
 		return
 	}
 
+	initNodes()
+
 	// S’assurer que tous les voisins existent comme clé
+
 	for _, voisins := range graph {
 		for _, v := range voisins {
 			if _, ok := graph[v]; !ok {
@@ -44,11 +47,12 @@ func main() {
 	}
 
 	// Vérification rapide
-	fmt.Println("Noeud 143403 ->", graph[143403])
+
+	// fmt.Println("Noeud 143403 ->", graph[143403])
 
 	//paramètre du test
-	numWalks := 10000
-	duree := 2 * time.Second   // 5 secondes (sinon ça prend 1000 ans)
+	numWalks := 100
+	duree := 120 * time.Second // 2 minutes (sinon ça prend 1000 ans)
 	startNode := int64(143403) // on prend le vrai premier noeud
 
 	fmt.Printf("=== Demo : 1 goroutine qui effectue la marche aléatoire pendant %d secondes ===\n", duree/1000000000)
@@ -92,7 +96,7 @@ func main() {
 
 	fmt.Println("\nProbabilités estimées avec 1 goroutine :")
 	for node, p := range probs1 {
-		fmt.Printf("Noeud %d -> %.4f\n", node, p)
+		fmt.Printf("Noeud %d -> %.10f\n", node, p)
 	}
 
 	fmt.Printf("\n=== Demo : %d goroutines qui effectue la marche aléatoire pendant %d secondes ===\n", numWalks, duree/1000000000)
@@ -138,7 +142,18 @@ func main() {
 
 	fmt.Printf("\nProbabilités estimées avec %d goroutines: \n", numWalks)
 	for node, p := range probs {
-		fmt.Printf("Noeud %d -> %.4f\n", node, p)
+		fmt.Printf("Noeud %d -> %.10f\n", node, p)
 	}
+
+	// --- Visualisation ---
+	layout := forceDirectedLayout(graph, 1200, 1200, 200) // 200 itérations suffisent pour un graphe moyen
+
+	// normaliser les probabilités pour que la couleur soit lisible
+	probs1Norm := normalizeProbs(probs1)
+	probsNorm := normalizeProbs(probs)
+
+	// dessiner les graphes
+	drawGraph("graph_1_goroutine.png", layout, probs1Norm, 1200, 1200)
+	drawGraph("graph_multi_goroutines.png", layout, probsNorm, 1200, 1200)
 
 }
