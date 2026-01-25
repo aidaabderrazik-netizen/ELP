@@ -31,13 +31,6 @@ La probabilité d’un nœud est estimée par :
 
 probabilité(nœud) = nombre de visites du nœud / nombre total de visites
 
-Pour comparer les performances, on utilise une durée fixe et on mesure :
-
-le nombre total de pas réalisés
-
-le débit (pas par seconde)
-
-le rapport de performance entre 1 goroutine et N goroutines
 
 #### Mesure de performance
 Pour comparer les performances, on utilise une durée fixe et on mesure :
@@ -57,7 +50,7 @@ Depuis la racine du projet :
 
 go run ./cmd/test 
 
-*(Par défaut, la durée est de 120 secondes. Pour modifier cela, il vous faut aller dans ./test/test.go ligne 44 )*
+*(Par défaut, la durée est de 120 secondes et le nombres de goroutines pour comparaison est de 100. Pour modifier cela, il vous faut aller dans ./test/test.go ligne 43-44 )*
 ##### Resultats affichés
 - temps écoulé
 
@@ -90,6 +83,8 @@ Dans un second, lancez le client :
 
 **go run ./TCP/client -goroutines=8 -duration=30 -graph=small** 
 
+Le nombre de connexion est limité à 4. 
+
 #### Paramètres du client
 - goroutines : nombre de goroutines (≥ 1) (50 par défaut)
 
@@ -99,7 +94,7 @@ Dans un second, lancez le client :
 
 graph_small.csv (une dizaine de noeuds) et lyon_graph.csv (environ 3000 noeuds)
 
-Par défaut, le gros graph est utilisé, pour changer cela il faut ajouter -graph=small dans votre commande comme dans l'exemple 
+Par défaut, le gros graphe est utilisé, pour changer cela il faut ajouter -graph=small dans votre commande comme dans l'exemple. 
 
 
 
