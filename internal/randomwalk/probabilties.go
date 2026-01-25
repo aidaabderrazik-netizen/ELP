@@ -1,4 +1,4 @@
-package main
+package randomwalk
 
 func ComputeProbabilities(nodeCounts map[int64]int) map[int64]float64 {
 	probs := make(map[int64]float64)

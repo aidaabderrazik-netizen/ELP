@@ -1,4 +1,4 @@
-package main
+package randomwalk
 
 import (
 	"encoding/csv"
@@ -7,6 +7,9 @@ import (
 	"strconv"
 	"strings"
 )
+
+var graph map[int64][]int64
+var nodes []int64
 
 func ChargerGraphe(nomFichier string) (map[int64][]int64, error) {
 	file, err := os.Open(nomFichier)
@@ -55,8 +58,14 @@ func ChargerGraphe(nomFichier string) (map[int64][]int64, error) {
 
 	return graphe, nil
 }
+func LoadGraph(g map[int64][]int64) {
+	graph = g
+	initNodes()
+}
 
-// fonction qui retourne le graphe chargé depuis le CSV
-func fonc(nomFichier string) (map[int64][]int64, error) {
-	return ChargerGraphe(nomFichier)
+func initNodes() {
+	nodes = make([]int64, 0, len(graph))
+	for node := range graph {
+		nodes = append(nodes, node)
+	}
 }

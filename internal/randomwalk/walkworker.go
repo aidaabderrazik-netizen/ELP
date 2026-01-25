@@ -1,4 +1,4 @@
-package main
+package randomwalk
 
 /// Fonction qui lance la marche en goroutine : appelle randomwalk, envoie le resultat dans un channel, et marque la fin
 import (
@@ -6,13 +6,16 @@ import (
 	"time"
 )
 
-func walkWorker(
+func WalkWorker(
 	start int64,
 	temps time.Duration,
-	result chan<- []int64, //envoie dans le canal
+	results chan<- WalkResult, //envoie dans le canal
 	wg *sync.WaitGroup,
 ) {
 	defer wg.Done()
-	hist := randomwalk(start, temps)
-	result <- hist //envoie de l'historique
+	hist, steps := Randomwalk(start, temps)
+	results <- WalkResult{
+		Visits: hist,
+		Steps:  steps,
+	} //envoie de l'historique
 }

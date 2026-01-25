@@ -1,28 +1,17 @@
-package main
+package randomwalk
 
 import (
 	"math/rand"
 	"time"
 )
 
-// listes des noeuds du graphe
-
-var nodes []int64
-
-func initNodes() {
-	nodes = make([]int64, 0, len(graph))
-	for n := range graph {
-		nodes = append(nodes, n)
-	}
-}
-
 // fonction de la marche aléatoire
-
-func randomwalk(start int64, temps time.Duration) []int64 {
+func Randomwalk(start int64, temps time.Duration) ([]int64, int64) {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	position := start
-	hist := []int64{position} // trace des positions
+	hist := []int64{position} // trace des position
+	var steps int64 = 0
 
 	endTime := time.Now().Add(temps) //quand arreter
 
@@ -37,7 +26,9 @@ func randomwalk(start int64, temps time.Duration) []int64 {
 		}
 
 		position = voisins[r.Intn(len(voisins))]
+		steps++
 		hist = append(hist, position)
 	}
-	return hist
+
+	return hist, steps
 }
