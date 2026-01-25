@@ -48,7 +48,7 @@ Cette version permet de comparer 1 goroutine vs N goroutines directement depuis 
 #### Lancement
 Depuis la racine du projet :
 
-go run ./cmd/test 
+go run ./test 
 
 *(Par défaut, la durée est de 120 secondes et le nombres de goroutines pour comparaison est de 100. Pour modifier cela, il vous faut aller dans ./test/test.go ligne 43-44 )*
 ##### Resultats affichés
