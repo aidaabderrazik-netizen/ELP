@@ -1,6 +1,6 @@
 # Random Walk & PageRank 
 
-Fait par Oaissa Adam, Abderrazick Aida, Malamba Ruth
+Fait par Oaissa Adam, Abderrazik Aida, Malamba Ruth
 
 ## 1.Description du projet
 Ce projet implémente une **marche aléatoire (Random Walk)** sur un graphe afin d’estimer une **distribution de probabilité de visite des noeuds**, principe utilisé dans l’algorithme **PageRank**.
