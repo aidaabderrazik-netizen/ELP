@@ -6,19 +6,20 @@ let liste_id =[]
 
 export function constructor(name) {
     // IL FAUT UNE LISTE DES IDENTIFIANTS DEJA EXISTANT
-    let deck = []
+    let deck_player = []
     let points = 0 
-    let i = 1
-    while (i in liste_id) {
-        i += 1
-    }
+    // let id = 1
+    // while (id in liste_id) {
+    //     id += 1
+    // }
     let player = {
         "name" : name, 
-        "id" : id, 
-        "deck" : deck,
+        "id" : id,
+        "deck_player" : deck_player,
         "points" : points,
         "manche" : True // initialement le joueur a le droit de jouer sa manche 
     }
+    return player
 }
 
 
