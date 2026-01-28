@@ -8,7 +8,6 @@ const LOG_FILE = path.join(LOG_DIR, 'game_log.txt');
 
 
 function log(message) {
-  ensureLogDir();
-  const line = message + '';
+  const line = message + '\n';
   fs.appendFileSync(LOG_FILE, line, { encoding: 'utf8' });
 }
