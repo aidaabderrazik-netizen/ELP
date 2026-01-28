@@ -1,1 +1,9 @@
-//on verra a quoi ça sert
+{
+  "name": "flip7",
+  "version": "1.0.0",
+  "description": "Jeu de cartes Flip7 en Node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  }
+}
