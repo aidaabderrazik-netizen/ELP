@@ -1,50 +1,44 @@
 // attribution joueur 
 
 
-export function randomInt(min, max) {
+function randomInt(min, max) {
   return Math.floor(randomFloat(min, max + 1))
 }
 
 let liste_id =[]
 
-export function constructor(name) {
+function createPlayer(id,name) {
     // IL FAUT UNE LISTE DES IDENTIFIANTS DEJA EXISTANT
-    let deck_player = []
-    let points = 0 
-    // let id = 1
-    // while (id in liste_id) {
-    //     id += 1
-    // }
     let player = {
         "name" : name, 
         "id" : id,
-        "deck_player" : deck_player,
-        "points" : points,
-        "manche" : True // initialement le joueur a le droit de jouer sa manche 
+        "deck_player" : [],
+        "totalPoints" : 0,
+        "roundPoints": 0 ,
+        "manche" : true // initialement le joueur a le droit de jouer sa manche 
     }
     return player
 }
 
-export function hasDuplicate(carte, deck) {
-    for (let i=0; i<deck.lenght; i++ ) {
-        if (carte == deck[i]) {
-            return True // carte en doublon, il faut arreter la manche
+function hasDuplicate(carte, player_deck) {
+    if (!isNaN(carte)) { // on verifie que c'est pas une carte bonus 
+        if (player_deck.includes(carte)) {
+                return true // carte en doublon, il faut arreter la manche
+            }
         }
+    else {
+        return false
     }
+
 }
 
-export function addCard(card, deck_player) {
-    if (player[manche] == true) {
-        carte = deck[randomInt(0, length(deck))]
-        if (hasDuplicate(card, deck_player) == true) { 
-            player[manche] = false
-        }
-    }
-}
 
-export function resetHand(deck_player) {
+function resetHand(deck_player) {
     deck_player = []
 }
+
+module.exports = {createPlayer ,resetHand,hasDuplicate}
+
 
 
 
