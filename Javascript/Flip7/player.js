@@ -1,8 +1,11 @@
 // attribution joueur 
 
 
-let liste_id =[]
+export function randomInt(min, max) {
+  return Math.floor(randomFloat(min, max + 1))
+}
 
+let liste_id =[]
 
 export function constructor(name) {
     // IL FAUT UNE LISTE DES IDENTIFIANTS DEJA EXISTANT
@@ -21,13 +24,6 @@ export function constructor(name) {
     }
     return player
 }
-
-
-export function randomInt(min, max) {
-  return Math.floor(randomFloat(min, max + 1))
-}
-
-
 
 export function hasDuplicate(carte, deck) {
     for (let i=0; i<deck.lenght; i++ ) {

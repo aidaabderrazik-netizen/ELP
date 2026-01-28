@@ -3,7 +3,8 @@ import { createInterface } from "readline";
 const rl =createInterface({input: process.stdin, output :process.stdout}) //permet de recuperer la demande de l'utilisateur
 
 
-// fonction qui pinermet d'afficher une question
+// fonction qui permet d'afficher une question
+
 function askQuestion(question) {
   return new Promise((resolve) => {
     rl.question(question, (answer) => {
@@ -30,5 +31,5 @@ function closeInput() {
   rl.close();
 }
 
-export default { askQuestion, closeInput };
+export default { askQuestion, closeInput, askPlayerChoice};
 //retourne "draw" ou "stop"

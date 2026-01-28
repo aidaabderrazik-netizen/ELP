@@ -1,18 +1,23 @@
+
 function createDeck() {
-    const deck = []
-    for (let valeur=1; valeur<=12; valeur++){
-        for (let i=1; i<value; i++){
-            deck.push({type:'number', value});
+    const deck = [0]
+    for (let value=1; value<=12; value++){
+        for (let i=1; i<=value; i++){
+            deck.push(value);
         }
     }
-    const CARTES_ACTIONS = {SECOND:6, FREEZE:6, PLUS2:6, TIMES2:6};
-    for (const [action,count] of Object.entries(CARTES_ACTIONS)) {
-        for (let i=0; i<count; i++) {
-            deck.push({type: 'action',action })
+    const CARTES_ACTIONS = ["SECOND", "FREEZE", "PLUS2", "TIMES2"]
+    for (let i=0; i<=3; i++){
+        for (let j=1; j<=6; j++){
+            deck.push(CARTES_ACTIONS[i]);
         }
     }
+
     return deck;
 }
+
+// Algorithme de Fisher-Yates 
+
 function shuffle(deck) {
     for (let i=deck.length-1; i>0; i--) {
         const j= Math.floor(Math.random()*(i+1));
@@ -28,3 +33,92 @@ function drawCard(deck) {
     return deck.pop();
 
 }
+
+let deck = createDeck()
+shuffle(deck)
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+console.log(drawCard(deck))
+
+console.log(drawCard(deck))
+
+console.log(deck)
