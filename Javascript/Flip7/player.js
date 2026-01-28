@@ -1,8 +1,31 @@
-constructor(name)
+// attribution joueur 
+
+
+let liste_id =[]
+
+
+export function constructor(name) {
+    // IL FAUT UNE LISTE DES IDENTIFIANTS DEJA EXISTANT
+    let deck = []
+    let points = 0 
+    let i = 1
+    while (i in liste_id) {
+        i += 1
+    }
+    let player = {
+        "name" : name, 
+        "id" : id, 
+        "deck" : deck,
+        "points" : points,
+        "manche" : True // initialement le joueur a le droit de jouer sa manche 
+    }
+}
+
 
 export function randomInt(min, max) {
   return Math.floor(randomFloat(min, max + 1))
 }
+
 
 
 export function hasDuplicate(carte, deck) {
@@ -14,25 +37,17 @@ export function hasDuplicate(carte, deck) {
 }
 
 export function addCard(card, deck_player) {
-    carte = deck[randomInt(0, length(deck))]
-    if (hasDuplicate(card, deck_player) == True) { 
-        print("La manche s'arrête") // manche arretée 
+    if (player[manche] == true) {
+        carte = deck[randomInt(0, length(deck))]
+        if (hasDuplicate(card, deck_player) == true) { 
+            player[manche] = false
+        }
     }
 }
-    
+
+export function resetHand(deck_player) {
+    deck_player = []
+}
 
 
-
-
-
-resetHand()
-
-// Module Joueur : fonction piocher, 
-
-let deck_test = ["1", "2", "3"]
-
-
-
-
-let carte = ""
 
