@@ -4,6 +4,6 @@
   "description": "Jeu de cartes Flip7 en Node.js",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js"
+    "start": "node index.js"
   }
 }
