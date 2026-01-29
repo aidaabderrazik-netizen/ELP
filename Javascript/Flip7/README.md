@@ -55,6 +55,7 @@ La partie se termine automatiquement lorsqu’un joueur atteint 100 points ou pl
 Le vainqueur est affiché à l’écran et enregistré dans le fichier de log.
 
 ### Remarques
-Le module disponible de Flip7 n'a pas été utilisé pour réalisé ce projet. 
+Le module disponible de Flip7 n'a pas été utilisé pour réaliser ce projet. 
 L'IA a été utilisé pour le deboggage. 
 La gestion des cartes spéciales n'est pas incluse dans notre module. 
+
