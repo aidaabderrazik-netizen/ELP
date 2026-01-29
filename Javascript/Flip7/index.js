@@ -1,1 +1,1 @@
-// sert à lancer le jeu
+// sert à lancer le jeu → main
