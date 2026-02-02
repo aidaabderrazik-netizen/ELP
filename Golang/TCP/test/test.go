@@ -1,14 +1,14 @@
 package main
 
 import (
-	"ELP/internal/randomwalk" // Package contenant la logique du random walk / PageRank
+	"ELP/internal/randomwalk" // Package contenant la logique du random walk
 	"fmt"                     // Affichage console
 	"math/rand"               // Générateur de nombres aléatoires
 	"sync"                    // Synchronisation entre goroutines (WaitGroup)
 	"time"                    // Gestion du temps et des durées
 )
 
-// Graphe global : map[noeud] -> liste des voisins
+// global : map[noeud] -> liste des voisins
 var graph map[int64][]int64
 
 func main() {
@@ -28,8 +28,8 @@ func main() {
 	// Évite les accès à des clés inexistantes pendant la marche aléatoire
 	for _, voisins := range graph {
 		for _, v := range voisins {
-			if _, ok := graph[v]; !ok {
-				graph[v] = []int64{}
+			if _, ok := graph[v]; !ok { // si le noeuds existe pas dans le graphe mais qu'il est cité comme voisin
+				graph[v] = []int64{} // On lui rajoute une liste vide
 			}
 		}
 	}
@@ -43,6 +43,8 @@ func main() {
 	numWalks := 100            // Nombre de goroutines pour le test parallèle
 	duree := 120 * time.Second // Durée fixe du test
 	startNode := int64(143403) // Noeud de départ du random walk
+
+	fmt.Printf("Graphe utilisé pour les 2 démos: graph_small.csv \n")
 
 	fmt.Printf(
 		"=== Demo : 1 goroutine qui effectue la marche aléatoire pendant %d secondes ===\n",
