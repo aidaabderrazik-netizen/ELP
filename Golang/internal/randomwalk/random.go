@@ -7,7 +7,7 @@ import (
 
 // fonction de la marche aléatoire
 func Randomwalk(start int64, temps time.Duration) ([]int64, int64) {
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	r := rand.New(rand.NewSource(time.Now().UnixNano())) //pour que ce soit aléatoire à chaque tirage
 
 	position := start
 	hist := []int64{position} // trace des position
@@ -32,3 +32,4 @@ func Randomwalk(start int64, temps time.Duration) ([]int64, int64) {
 
 	return hist, steps
 }
+
