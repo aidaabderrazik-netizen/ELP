@@ -1,19 +1,22 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, div, text, header, h1, p, input, button)
-import Html.Attributes exposing (style, placeholder, value, class)
+import Html exposing (Html, div, text, header, h1, p, input, button, span)
+import Html.Attributes exposing (style, placeholder, value, class, disabled)
 import Html.Events exposing (onInput, onClick)
 import Http
 import Random
 import Dict exposing (Dict)
 import Json.Decode as Decode exposing (Decoder)
+import Time 
 
 -- 1. Le Modèle
 type alias Meaning =
     { partOfSpeech : String
     , definitions : List Definition
     }
+
+type GameMode = Idle | Playing
 
 type alias Definition = String
 
@@ -26,6 +29,9 @@ type Model
         , meanings : List Meaning
         , saisie : String 
         , montrerSolution : Bool 
+        , score : Int
+        , tempsRestant : Int
+        , mode : GameMode
         }
 
 -- 2. L'initialisation
@@ -46,6 +52,8 @@ type Msg
     | ChangementSaisie String
     | AfficherSolution
     | ProchainMot
+    | StartTimerGame
+    | Tick Time.Posix
 
 -- Logique de traitement des données
 partOfSpeechPriority : String -> Int
@@ -84,7 +92,7 @@ meaningsDecoder : Decoder Meaning
 meaningsDecoder = Decode.map2 Meaning (Decode.field "partOfSpeech" Decode.string) definitionsDecoder 
 
 dictionaryDecoder : Decoder (List Meaning)
-dictionaryDecoder = Decode.list (Decode.field "meanings" (Decode.list meaningsDecoder)) |> Decode.map List.concat
+dictionaryDecoder = Decode.list (Decode.field "meanings" (Decode.list meaningsDecoder)) |> Decode.map (List.concat >> groupMeanings)
 
 -- Styles
 stylesAnimation : Html Msg
@@ -112,7 +120,6 @@ update msg model =
                 Ok contenu ->
                     let 
                         listeMots = String.words contenu
-                        taille = List.length listeMots - 1
                     in
                     ( Succes 
                         { tousLesMots = listeMots
@@ -120,35 +127,61 @@ update msg model =
                         , meanings = []
                         , saisie = ""
                         , montrerSolution = False 
+                        , score = 0 
+                        , tempsRestant = 120
+                        , mode = Idle
                         }
-                    , Random.generate IndexChoisi (Random.int 0 taille)
+                    , Random.generate IndexChoisi (Random.int 0 (List.length listeMots - 1))
                     )
-                Err _ ->
-                    ( Erreur "Impossible de lire le fichier .txt", Cmd.none )
+                Err _ -> ( Erreur "Impossible de lire le fichier .txt", Cmd.none )
 
         IndexChoisi index ->
             case model of
-                Succes contenu ->
+                Succes data ->
                     let 
-                        mot = List.drop index contenu.tousLesMots |> List.head |> Maybe.withDefault ""
-                        url = "https://api.dictionaryapi.dev/api/v2/entries/en/" ++ mot
+                        mot = List.drop index data.tousLesMots |> List.head |> Maybe.withDefault ""
                     in 
-                    ( Succes { contenu | motChoisi = mot, meanings = [], saisie = "", montrerSolution = False }
-                    , Http.get { url = url, expect = Http.expectJson DefinitionsRecues dictionaryDecoder }
+                    ( Succes { data | motChoisi = mot, meanings = [], saisie = "", montrerSolution = False }
+                    , Http.get { url = "https://api.dictionaryapi.dev/api/v2/entries/en/" ++ mot, expect = Http.expectJson DefinitionsRecues dictionaryDecoder }
                     )
                 _ -> ( model, Cmd.none )
 
         DefinitionsRecues resultat ->
             case (resultat, model) of
-                ( Ok meanings, Succes data ) ->
-                    ( Succes { data | meanings = meanings }, Cmd.none )
-                ( Err err, _ ) ->
-                    ( Erreur ("Erreur dictionnaire : " ++ Debug.toString err), Cmd.none )
+                ( Ok meanings, Succes data ) -> ( Succes { data | meanings = meanings }, Cmd.none )
+                _ -> ( model, Cmd.none )
+
+        StartTimerGame ->
+            case model of
+                Succes data -> 
+                    ( Succes { data | mode = Playing, score = 0, tempsRestant = 120, montrerSolution = False }
+                    -- On demande un nouvel index au hasard dès qu'on appuie sur Start
+                    , Random.generate IndexChoisi (Random.int 0 (List.length data.tousLesMots - 1))
+                    )
+                _ -> ( model, Cmd.none )
+        Tick _ ->
+            case model of
+                Succes data ->
+                    if data.mode == Playing then
+                        if data.tempsRestant <= 0 then
+                            ( Succes { data | mode = Idle, montrerSolution = True }, Cmd.none )
+                        else
+                            ( Succes { data | tempsRestant = data.tempsRestant - 1 }, Cmd.none )
+                    else ( model, Cmd.none )
                 _ -> ( model, Cmd.none )
 
         ChangementSaisie nouvelleSaisie ->
             case model of
-                Succes data -> ( Succes { data | saisie = nouvelleSaisie }, Cmd.none )
+                Succes data -> 
+                    let 
+                        estJuste = String.toLower (String.trim nouvelleSaisie) == String.toLower data.motChoisi
+                    in
+                    if estJuste && data.mode == Playing then
+                        ( Succes { data | score = data.score + 1, saisie = "" }
+                        , Random.generate IndexChoisi (Random.int 0 (List.length data.tousLesMots - 1))
+                        )
+                    else
+                        ( Succes { data | saisie = nouvelleSaisie }, Cmd.none )
                 _ -> ( model, Cmd.none )
 
         AfficherSolution ->
@@ -158,95 +191,50 @@ update msg model =
 
         ProchainMot ->
             case model of
-                Succes data ->
-                    let
-                        taille = List.length data.tousLesMots - 1
-                    in
-                    ( model, Random.generate IndexChoisi (Random.int 0 taille) )
+                Succes data -> ( model, Random.generate IndexChoisi (Random.int 0 (List.length data.tousLesMots - 1)) )
                 _ -> ( model, Cmd.none )
 
 -- 5. La Vue
 viewMeaning : Meaning -> Html Msg
 viewMeaning meaning =
     div [ style "margin-bottom" "24px" ]
-        [ div 
-            [ style "color" "#818384"
-            , style "text-transform" "uppercase"
-            , style "font-weight" "bold"
-            , style "font-size" "14px"
-            , style "margin-bottom" "8px"
-            ] 
-            [ text meaning.partOfSpeech ]
-        , div [ style "color" "#121213", style "line-height" "1.5" ] 
-            (List.map (\def -> p [ style "margin" "4px 0" ] [ text ("• " ++ def) ]) meaning.definitions)
+        [ div [ style "color" "#818384", style "text-transform" "uppercase", style "font-weight" "bold", style "font-size" "14px", style "margin-bottom" "8px" ] [ text meaning.partOfSpeech ]
+        , div [ style "color" "#121213", style "line-height" "1.5" ] (List.map (\def -> p [ style "margin" "4px 0" ] [ text ("• " ++ def) ]) meaning.definitions)
         ]
 
 view : Model -> Html Msg
 view model =
     case model of
-        Chargement ->
-            div [ style "padding" "20px" ] [ text "Chargement du dictionnaire..." ]
-
-        Erreur message ->
-            div [ style "padding" "20px", style "color" "red" ] [ text message ]
-
+        Chargement -> div [ style "padding" "20px" ] [ text "Loading dictionary..." ]
+        Erreur message -> div [ style "padding" "20px", style "color" "red" ] [ text message ]
         Succes data ->
             let
                 estJuste = String.toLower (String.trim data.saisie) == String.toLower data.motChoisi
-                
-                titreTexte = 
-                    if data.montrerSolution then 
-                        "THE WORD WAS: " ++ String.toUpper data.motChoisi 
-                    else 
-                        "GUESS IT !"
+                formatTime s = (String.fromInt (s // 60)) ++ ":" ++ (String.padLeft 2 '0' (String.fromInt (remainderBy 60 s)))
+                titreTexte = if data.montrerSolution then "THE WORD WAS: " ++ String.toUpper data.motChoisi else "GUESS IT !"
             in
-            div 
-                [ style "background-color" "white", style "min-height" "100vh"
-                , style "display" "flex", style "flex-direction" "column", style "align-items" "center"
-                , style "font-family" "'Helvetica Neue', Arial, sans-serif"
-                ]
+            div [ style "background-color" "white", style "min-height" "100vh", style "display" "flex", style "flex-direction" "column", style "align-items" "center", style "font-family" "sans-serif" ]
                 [ stylesAnimation
-                , header 
-                    [ style "width" "100%", style "background-color" "white", style "color" "#121213"
-                    , style "border-bottom" "1px solid #d3d6da", style "text-align" "center", style "padding" "15px 0"
-                    , style "margin-bottom" "30px"
-                    ]
+                , header [ style "width" "100%", style "border-bottom" "1px solid #d3d6da", style "text-align" "center", style "padding" "15px 0", style "margin-bottom" "30px" ]
                     [ h1 [ style "margin" "0", style "font-size" "32px" ] [ text titreTexte ]
-                    
-                    , div [ style "margin-top" "10px" ] 
-                        [ if not data.montrerSolution && not estJuste then
-                            button 
-                                [ onClick AfficherSolution
-                                , style "background" "none", style "border" "none", style "color" "#818384"
-                                , style "text-decoration" "underline", style "cursor" "pointer", style "margin-right" "15px"
-                                ] 
-                                [ text "Give up? Show answer" ]
-                          else text ""
-                        
-                        , button 
-                            [ onClick ProchainMot
-                            , style "background-color" "#121213", style "color" "white", style "border" "none"
-                            , style "padding" "8px 16px", style "border-radius" "4px", style "cursor" "pointer", style "font-weight" "bold"
-                            ] 
-                            [ text "NEW WORD" ]
+                    , div [ style "font-size" "20px", style "margin" "10px", style "font-weight" "bold" ] 
+                        [ text ("TIME: " ++ formatTime data.tempsRestant)
+                        , span [ style "margin-left" "20px", style "color" "#6aaa64" ] [ text ("SCORE: " ++ String.fromInt data.score) ]
                         ]
+                    , if data.mode == Idle then
+                        button [ onClick StartTimerGame, style "background-color" "#6aaa64", style "color" "white", style "border" "none", style "padding" "10px 20px", style "border-radius" "4px", style "cursor" "pointer", style "font-weight" "bold" ] [ text "START CHALLENGE" ]
+                      else text ""
                     ]
-
                 , div [ style "max-width" "800px", style "width" "90%" ]
-                    [ div [ style "margin-bottom" "30px" ] 
-                        (List.map viewMeaning data.meanings)
-                    
+                    [ div [ style "margin-bottom" "30px" ] (List.map viewMeaning data.meanings)
                     , input 
                         [ placeholder "Type your guess..."
                         , value data.saisie
                         , onInput ChangementSaisie 
                         , class (if estJuste then "wordle-success" else "")
-                        , style "background-color" "white", style "border" "2px solid #d3d6da"
-                        , style "color" "#121213", style "padding" "15px", style "width" "100%"
-                        , style "font-size" "1.2rem", style "text-align" "center", style "text-transform" "uppercase"
-                        , style "box-sizing" "border-box", style "outline" "none"
-                        ]
-                        []
+                        , disabled (data.mode == Idle && data.tempsRestant <= 0)
+                        , style "width" "100%", style "padding" "15px", style "font-size" "1.2rem", style "text-align" "center", style "text-transform" "uppercase", style "border" "2px solid #d3d6da"
+                        ] []
                     ]
                 ]
 
@@ -254,6 +242,9 @@ main =
     Browser.element
         { init = init
         , update = update
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = \model -> 
+            case model of
+                Succes data -> if data.mode == Playing then Time.every 1000 Tick else Sub.none
+                _ -> Sub.none
         , view = view
         }
