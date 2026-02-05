@@ -1,9 +1,0 @@
-{
-  "name": "flip7",
-  "version": "1.0.0",
-  "description": "Jeu de cartes Flip7 en Node.js",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  }
-}
