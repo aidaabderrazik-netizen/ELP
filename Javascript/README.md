@@ -36,6 +36,7 @@ npm start
 
 ## Fichier d'enregistrement des manches (game_log)
 Toutes les actions importantes du jeu sont enregistrées dans le fichier : game_log.txt.
+Ce fichier sera dans le dossier " log " qui estcrée automatiquement à l'initialisation s'il n'existe pas déja. 
 
 Chaque ligne correspond à un événement du jeu.
 
@@ -58,4 +59,5 @@ Le vainqueur est affiché à l’écran et enregistré dans le fichier de log.
 Le module disponible de Flip7 n'a pas été utilisé pour réaliser ce projet. 
 L'IA a été utilisé pour le deboggage. 
 La gestion des cartes spéciales n'est pas incluse dans notre module. 
+
 
