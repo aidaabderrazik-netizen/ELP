@@ -1,4 +1,4 @@
-# Random Walk & PageRank 
+# Random Walk 
 
 Fait par Oaissa Adam, Abderrazik Aida, Malamba Ruth
 
